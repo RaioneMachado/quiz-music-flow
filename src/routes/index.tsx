@@ -291,13 +291,12 @@ function QuizPage() {
             <FinalStep state={state} songs={selectedSongs} />
           )}
 
-          {/* Nav */}
-          {step < totalSteps - 1 && (
+          {/* Nav — only on multi-select steps (1 & 2). Single-select steps avançam sozinhos. */}
+          {(step === 1 || step === 2) && (
             <div className="mt-6 flex items-center justify-between gap-3">
               <button
                 onClick={back}
-                disabled={step === 0}
-                className="rounded-lg px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-30"
+                className="rounded-lg px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
               >
                 ← Voltar
               </button>
@@ -309,6 +308,13 @@ function QuizPage() {
                 Continuar →
               </button>
             </div>
+          )}
+          {step === 3 || step === 0 ? null : null}
+          {(step === 0 || step === 3) && step !== 0 && (
+            <button onClick={back} className="mt-4 text-xs text-muted-foreground hover:text-foreground">← Voltar</button>
+          )}
+          {step === 3 && (
+            <button onClick={back} className="mt-4 block w-full text-center text-xs text-muted-foreground hover:text-foreground">← Voltar</button>
           )}
         </div>
 
