@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import seloAsset from "@/assets/selo-garantia.png.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -153,9 +153,20 @@ function QuizPage() {
   const progress = ((step + 1) / totalSteps) * 100;
 
   const selectedSongs = useMemo(() => {
-    const arr: string[] = [];
-    state.styles.forEach((s) => SONGS[s]?.forEach((song) => arr.push(`${song}`)));
-    return arr;
+    // Round-robin entre os estilos selecionados, máx. 30 (prévia)
+    const lists = state.styles.map((s) => [...(SONGS[s] || [])]);
+    const out: string[] = [];
+    let added = true;
+    while (added && out.length < 30) {
+      added = false;
+      for (const list of lists) {
+        if (list.length && out.length < 30) {
+          out.push(list.shift()!);
+          added = true;
+        }
+      }
+    }
+    return out;
   }, [state.styles]);
 
   const canAdvance =
@@ -168,9 +179,19 @@ function QuizPage() {
   const next = () => setStep((s) => Math.min(s + 1, totalSteps - 1));
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
+
+  // Auto-advance helper for single-select steps
+  const autoNext = () => {
+    window.setTimeout(() => next(), 250);
+  };
+
   return (
     <main className="min-h-screen px-4 py-8 md:py-12">
-      <div className="mx-auto max-w-2xl">
+      <div ref={topRef} className="mx-auto max-w-2xl scroll-mt-4">
         {/* Header */}
         <header className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/50 px-4 py-1.5 text-xs font-medium text-muted-foreground">
@@ -180,6 +201,9 @@ function QuizPage() {
           <h1 className="mt-4 text-2xl font-bold md:text-3xl">
             <span className="text-gradient-gold">Partituras Brasil</span>
           </h1>
+          <p className="mt-2 text-xs font-medium text-muted-foreground">
+            📄 Partituras + 🎧 Playback inclusos
+          </p>
         </header>
 
         {/* Progress */}
@@ -204,7 +228,7 @@ function QuizPage() {
                   <OptionCard
                     key={l.id}
                     selected={state.level === l.id}
-                    onClick={() => setState({ ...state, level: l.id })}
+                    onClick={() => { setState({ ...state, level: l.id }); autoNext(); }}
                   >
                     <div>
                       <div className="font-semibold">{l.label}</div>
@@ -215,6 +239,7 @@ function QuizPage() {
               </div>
             </StepWrap>
           )}
+
 
           {step === 1 && (
             <StepWrap title="O que te move na música?" subtitle="Pode escolher mais de uma opção.">
@@ -263,7 +288,7 @@ function QuizPage() {
                   <OptionCard
                     key={i.id}
                     selected={state.instrument === i.id}
-                    onClick={() => setState({ ...state, instrument: i.id })}
+                    onClick={() => { setState({ ...state, instrument: i.id }); autoNext(); }}
                   >
                     <div className="text-2xl">{i.emoji}</div>
                     <div className="mt-1 text-sm font-medium">{i.label}</div>
@@ -277,13 +302,12 @@ function QuizPage() {
             <FinalStep state={state} songs={selectedSongs} />
           )}
 
-          {/* Nav */}
-          {step < totalSteps - 1 && (
+          {/* Nav — only on multi-select steps (1 & 2). Single-select steps avançam sozinhos. */}
+          {(step === 1 || step === 2) && (
             <div className="mt-6 flex items-center justify-between gap-3">
               <button
                 onClick={back}
-                disabled={step === 0}
-                className="rounded-lg px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-30"
+                className="rounded-lg px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
               >
                 ← Voltar
               </button>
@@ -295,6 +319,9 @@ function QuizPage() {
                 Continuar →
               </button>
             </div>
+          )}
+          {step === 3 && (
+            <button onClick={back} className="mt-4 block w-full text-center text-xs text-muted-foreground hover:text-foreground">← Voltar</button>
           )}
         </div>
 
@@ -378,8 +405,8 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
       {/* Songs box */}
       <div className="mt-6">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">🎵 Algumas músicas do seu pacote</h3>
-          <span className="text-xs text-muted-foreground">{songs.length > 0 ? `${songs.length}+ músicas` : "selecione estilos"}</span>
+          <h3 className="text-sm font-semibold">🎵 Prévia das músicas do seu pacote</h3>
+          <span className="text-xs text-muted-foreground">{songs.length > 0 ? `${songs.length} de 70+` : "selecione estilos"}</span>
         </div>
         <div className="scrollbar-custom h-56 overflow-y-auto rounded-xl border border-border bg-background/60 p-1">
           {songs.length === 0 ? (
@@ -393,14 +420,17 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
                   <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/15 text-[11px] font-semibold text-primary">
                     {i + 1}
                   </span>
-                  <span className="truncate">{s}</span>
+                  <span className="flex-1 truncate">{s}</span>
+                  <span className="hidden shrink-0 rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary sm:inline">
+                    📄 + 🎧
+                  </span>
                 </li>
               ))}
             </ul>
           )}
         </div>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">
-          + outras 70 partituras adicionais selecionadas pro seu perfil
+          ⚡ Esta é apenas uma <strong className="text-foreground">prévia</strong> — o pacote completo tem <strong className="text-foreground">70+ partituras + playback</strong> de cada música
         </p>
       </div>
 
@@ -417,7 +447,8 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
         <div className="mt-1 text-xs text-muted-foreground">à vista ou em 3x no cartão</div>
 
         <ul className="mx-auto mt-5 max-w-sm space-y-2 text-left text-sm">
-          <Bullet>+70 partituras dos estilos que você toca</Bullet>
+          <Bullet><strong>70+ partituras</strong> dos estilos que você toca</Bullet>
+          <Bullet><strong>Playback de cada música</strong> pra você praticar junto 🎧</Bullet>
           <Bullet>Adaptadas para {instrument || "seu instrumento"}</Bullet>
           <Bullet>Cifras + partitura no mesmo arquivo</Bullet>
           <Bullet>🎁 Brindes exclusivos (cifras simplificadas, e-book de teoria, áudios)</Bullet>
