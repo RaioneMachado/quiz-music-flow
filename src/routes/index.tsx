@@ -277,7 +277,7 @@ function QuizPage() {
                   <OptionCard
                     key={i.id}
                     selected={state.instrument === i.id}
-                    onClick={() => setState({ ...state, instrument: i.id })}
+                    onClick={() => { setState({ ...state, instrument: i.id }); autoNext(); }}
                   >
                     <div className="text-2xl">{i.emoji}</div>
                     <div className="mt-1 text-sm font-medium">{i.label}</div>
