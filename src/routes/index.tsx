@@ -405,8 +405,8 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
       {/* Songs box */}
       <div className="mt-6">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">🎵 Algumas músicas do seu pacote</h3>
-          <span className="text-xs text-muted-foreground">{songs.length > 0 ? `${songs.length}+ músicas` : "selecione estilos"}</span>
+          <h3 className="text-sm font-semibold">🎵 Prévia das músicas do seu pacote</h3>
+          <span className="text-xs text-muted-foreground">{songs.length > 0 ? `${songs.length} de 70+` : "selecione estilos"}</span>
         </div>
         <div className="scrollbar-custom h-56 overflow-y-auto rounded-xl border border-border bg-background/60 p-1">
           {songs.length === 0 ? (
@@ -420,14 +420,17 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
                   <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/15 text-[11px] font-semibold text-primary">
                     {i + 1}
                   </span>
-                  <span className="truncate">{s}</span>
+                  <span className="flex-1 truncate">{s}</span>
+                  <span className="hidden shrink-0 rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary sm:inline">
+                    📄 + 🎧
+                  </span>
                 </li>
               ))}
             </ul>
           )}
         </div>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">
-          + outras 70 partituras adicionais selecionadas pro seu perfil
+          ⚡ Esta é apenas uma <strong className="text-foreground">prévia</strong> — o pacote completo tem <strong className="text-foreground">70+ partituras + playback</strong> de cada música
         </p>
       </div>
 
@@ -444,7 +447,8 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
         <div className="mt-1 text-xs text-muted-foreground">à vista ou em 3x no cartão</div>
 
         <ul className="mx-auto mt-5 max-w-sm space-y-2 text-left text-sm">
-          <Bullet>+70 partituras dos estilos que você toca</Bullet>
+          <Bullet><strong>70+ partituras</strong> dos estilos que você toca</Bullet>
+          <Bullet><strong>Playback de cada música</strong> pra você praticar junto 🎧</Bullet>
           <Bullet>Adaptadas para {instrument || "seu instrumento"}</Bullet>
           <Bullet>Cifras + partitura no mesmo arquivo</Bullet>
           <Bullet>🎁 Brindes exclusivos (cifras simplificadas, e-book de teoria, áudios)</Bullet>
