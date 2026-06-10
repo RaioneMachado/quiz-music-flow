@@ -153,9 +153,20 @@ function QuizPage() {
   const progress = ((step + 1) / totalSteps) * 100;
 
   const selectedSongs = useMemo(() => {
-    const arr: string[] = [];
-    state.styles.forEach((s) => SONGS[s]?.forEach((song) => arr.push(`${song}`)));
-    return arr;
+    // Round-robin entre os estilos selecionados, máx. 30 (prévia)
+    const lists = state.styles.map((s) => [...(SONGS[s] || [])]);
+    const out: string[] = [];
+    let added = true;
+    while (added && out.length < 30) {
+      added = false;
+      for (const list of lists) {
+        if (list.length && out.length < 30) {
+          out.push(list.shift()!);
+          added = true;
+        }
+      }
+    }
+    return out;
   }, [state.styles]);
 
   const canAdvance =
