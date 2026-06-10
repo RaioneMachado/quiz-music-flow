@@ -309,10 +309,6 @@ function QuizPage() {
               </button>
             </div>
           )}
-          {step === 3 || step === 0 ? null : null}
-          {(step === 0 || step === 3) && step !== 0 && (
-            <button onClick={back} className="mt-4 text-xs text-muted-foreground hover:text-foreground">← Voltar</button>
-          )}
           {step === 3 && (
             <button onClick={back} className="mt-4 block w-full text-center text-xs text-muted-foreground hover:text-foreground">← Voltar</button>
           )}
