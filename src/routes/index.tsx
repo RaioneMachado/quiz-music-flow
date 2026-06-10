@@ -168,9 +168,19 @@ function QuizPage() {
   const next = () => setStep((s) => Math.min(s + 1, totalSteps - 1));
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
+
+  // Auto-advance helper for single-select steps
+  const autoNext = () => {
+    window.setTimeout(() => next(), 250);
+  };
+
   return (
     <main className="min-h-screen px-4 py-8 md:py-12">
-      <div className="mx-auto max-w-2xl">
+      <div ref={topRef} className="mx-auto max-w-2xl scroll-mt-4">
         {/* Header */}
         <header className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/50 px-4 py-1.5 text-xs font-medium text-muted-foreground">
@@ -180,6 +190,9 @@ function QuizPage() {
           <h1 className="mt-4 text-2xl font-bold md:text-3xl">
             <span className="text-gradient-gold">Partituras Brasil</span>
           </h1>
+          <p className="mt-2 text-xs font-medium text-muted-foreground">
+            📄 Partituras + 🎧 Playback inclusos
+          </p>
         </header>
 
         {/* Progress */}
@@ -204,7 +217,7 @@ function QuizPage() {
                   <OptionCard
                     key={l.id}
                     selected={state.level === l.id}
-                    onClick={() => setState({ ...state, level: l.id })}
+                    onClick={() => { setState({ ...state, level: l.id }); autoNext(); }}
                   >
                     <div>
                       <div className="font-semibold">{l.label}</div>
@@ -215,6 +228,7 @@ function QuizPage() {
               </div>
             </StepWrap>
           )}
+
 
           {step === 1 && (
             <StepWrap title="O que te move na música?" subtitle="Pode escolher mais de uma opção.">
