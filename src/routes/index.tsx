@@ -262,7 +262,7 @@ function QuizPage() {
           )}
 
           {step === 2 && (
-            <StepWrap title="Quais estilos você toca?" subtitle="Selecione um ou mais estilos.">
+            <StepWrap title="Para qual estilo musical você quer as partituras?" subtitle="Selecione um ou mais estilos.">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {STYLES.map((s) => (
                   <OptionCard
