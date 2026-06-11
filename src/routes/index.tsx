@@ -282,7 +282,7 @@ function QuizPage() {
           )}
 
           {step === 3 && (
-            <StepWrap title="Qual instrumento você toca?" subtitle="Escolha o seu principal.">
+            <StepWrap title="Para qual instrumento serão as partituras?" subtitle="Escolha o seu principal.">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {INSTRUMENTS.map((i) => (
                   <OptionCard
