@@ -262,7 +262,7 @@ function QuizPage() {
           )}
 
           {step === 2 && (
-            <StepWrap title="Quais estilos você toca?" subtitle="Selecione um ou mais estilos.">
+            <StepWrap title="Para qual estilo musical você quer as partituras?" subtitle="Selecione um ou mais estilos.">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {STYLES.map((s) => (
                   <OptionCard
@@ -282,7 +282,7 @@ function QuizPage() {
           )}
 
           {step === 3 && (
-            <StepWrap title="Qual instrumento você toca?" subtitle="Escolha o seu principal.">
+            <StepWrap title="Para qual instrumento serão as partituras?" subtitle="Escolha o seu principal.">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {INSTRUMENTS.map((i) => (
                   <OptionCard
@@ -456,8 +456,9 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
         </ul>
 
         <a
-          href="#pagamento"
-          onClick={(e) => { e.preventDefault(); alert("Redirecionando para o pagamento..."); }}
+          href="https://seguropagamentos.com.br/promocaopartituras"
+          target="_blank"
+          rel="noopener noreferrer"
           className="mt-6 block w-full rounded-xl gradient-gold px-6 py-4 text-base font-bold text-gold-foreground shadow-glow transition-transform hover:scale-[1.02]"
         >
           QUERO MINHAS PARTITURAS →
@@ -500,8 +501,9 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
 
       {/* Final CTA */}
       <a
-        href="#pagamento"
-        onClick={(e) => { e.preventDefault(); alert("Redirecionando para o pagamento..."); }}
+        href="https://seguropagamentos.com.br/promocaopartituras"
+        target="_blank"
+        rel="noopener noreferrer"
         className="mt-8 block w-full rounded-xl gradient-gold px-6 py-4 text-center text-base font-bold text-gold-foreground shadow-glow transition-transform hover:scale-[1.02]"
       >
         GARANTIR MEU PACOTE POR R$34,90
