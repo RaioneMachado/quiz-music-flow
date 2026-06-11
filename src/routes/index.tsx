@@ -501,8 +501,9 @@ function FinalStep({ state, songs }: { state: State; songs: string[] }) {
 
       {/* Final CTA */}
       <a
-        href="#pagamento"
-        onClick={(e) => { e.preventDefault(); alert("Redirecionando para o pagamento..."); }}
+        href="https://seguropagamentos.com.br/promocaopartituras"
+        target="_blank"
+        rel="noopener noreferrer"
         className="mt-8 block w-full rounded-xl gradient-gold px-6 py-4 text-center text-base font-bold text-gold-foreground shadow-glow transition-transform hover:scale-[1.02]"
       >
         GARANTIR MEU PACOTE POR R$34,90
